@@ -1,7 +1,7 @@
 package com.esgScore.server.service;
 
 import com.esgScore.server.domain.User;
-import com.esgScore.server.domain.dto.JoinDTO;
+import com.esgScore.server.domain.dto.SignupDTO;
 import com.esgScore.server.domain.dto.UserDTO;
 import com.esgScore.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,17 +21,17 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
 
   @Transactional
-  public String createUser(JoinDTO joinDTO) {
+  public String createUser(SignupDTO signupDTO) {
 
-    if(userRepository.findByLoginId(joinDTO.getLoginId()).isPresent()) {
+    if(userRepository.findByLoginId(signupDTO.getLoginId()).isPresent()) {
       return "이미 가입된 로그인 아이디입니다.";
     }
 
     User createUser = User.builder()
-      .loginId(joinDTO.getLoginId())
-      .password(joinDTO.getPassword())
-      .email(joinDTO.getEmail())
-      .name(joinDTO.getName())
+      .loginId(signupDTO.getLoginId())
+      .password(signupDTO.getPassword())
+      .email(signupDTO.getEmail())
+      .name(signupDTO.getName())
 //      .isAuthorized(joinDTO.getIsAuthorized())
       .build();
 
