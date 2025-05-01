@@ -1,15 +1,16 @@
 package com.esgScore.server.domain;
 
 
+import com.esgScore.server.domain.dto.OrganizationDTO;
 import com.esgScore.server.domain.dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +38,7 @@ public class User {
     return this;
   }
 
-//  @OneToMany(mappedBy = "user")
-//  @Builder.Default
-//  private List<Organization> interestOrganization = new ArrayList<>();
+  private List<Organization> interestOrganization = new ArrayList<>();
 
-  public UserDTO toDTO() { return new UserDTO(name, email, phone); }
+  public UserDTO toDTO() { return new UserDTO(id, name, email, phone, interestOrganization); }
 }

@@ -3,6 +3,7 @@ package com.esgScore.server.controller;
 import com.esgScore.server.domain.User;
 import com.esgScore.server.domain.dto.SignupDTO;
 import com.esgScore.server.domain.dto.LoginDTO;
+import com.esgScore.server.domain.dto.UserDTO;
 import com.esgScore.server.repository.UserRepository;
 import com.esgScore.server.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,7 +37,7 @@ public class LoginController {
   @PostMapping("/login")
   public ResponseEntity<String> logIn(@RequestBody LoginDTO loginDTO, HttpServletRequest request) {
 
-    User user = userService.login(loginDTO.getLoginId(), loginDTO.getPassword());
+    UserDTO user = userService.login(loginDTO.getLoginId(), loginDTO.getPassword());
 
     // 로그인 실패
     if(user == null){
@@ -45,6 +46,9 @@ public class LoginController {
 
     HttpSession session = request.getSession();
     session.setAttribute("user", user);
+
+    UserDTO sessionUser = (UserDTO) session.getAttribute("user");
+    log.info("Login user: {}", sessionUser);
 
     // 200 ok
     return ResponseEntity.ok("로그인 성공");
@@ -62,7 +66,9 @@ public class LoginController {
   public ResponseEntity<Void> session(HttpServletRequest request) {
     HttpSession session = request.getSession();
 
-    User user = (User) session.getAttribute("user");
+    UserDTO user = (UserDTO) session.getAttribute("user");
+
+    log.info("Login user: {}", user);
     if(user == null || userRepository.findById(user.getId()).isEmpty()){
       return ResponseEntity.status(401).build();
     }

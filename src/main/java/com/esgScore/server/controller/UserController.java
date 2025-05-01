@@ -27,13 +27,30 @@ public class UserController {
 
   // 회원 정보 수정
   @PatchMapping
-  public ResponseEntity<String> updateUser(@Login User loginUser, @ModelAttribute UserDTO userDTO) {
-    String result = userService.updateUser(loginUser.getId(), loginUser.toDTO());
+  public ResponseEntity<String> updateUser(@Login User loginUser, @RequestBody UserDTO userDTO) {
+    String result = userService.updateUser(loginUser.getId(), userDTO);
+    if(!result.equals("회원 정보 수정 성공")) {
+      return ResponseEntity.badRequest().body(result);
+    }
     return ResponseEntity.ok("회원 정보 수정 성공");
   }
 
   // 회원 정보 삭제
+  @DeleteMapping
+  public ResponseEntity<String> deleteUser(@Login User loginUser) {
+    userService.deleteUser(loginUser.getId());
+    return ResponseEntity.ok("회원 삭제");
+  }
 
+  // 회원 비밀번호 변경
+  @PatchMapping(value = "/password")
+  public ResponseEntity<String> updatePassword(@Login User loginUser, @RequestBody String password) {
+    String result = userService.updatePassword(loginUser.getId(), password);
+    if(!result.equals("비밀번호 수정 성공")) {
+      return ResponseEntity.badRequest().body(result);
+    }
+    return ResponseEntity.ok("비밀번호 변경 성공");
+  }
 
 
 }

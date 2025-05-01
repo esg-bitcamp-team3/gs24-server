@@ -10,9 +10,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class UserDTO {
+  private String id;
   private String name;
   private String email;
   private String phone;
 
-//  private List<Organization> interestOrganization;
+  private List<Organization> interestOrganization;
 }

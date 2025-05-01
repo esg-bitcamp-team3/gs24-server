@@ -32,6 +32,7 @@ public class UserService {
       .password(signupDTO.getPassword())
       .email(signupDTO.getEmail())
       .name(signupDTO.getName())
+      .phone(signupDTO.getPhone())
 //      .isAuthorized(joinDTO.getIsAuthorized())
       .build();
 
@@ -43,13 +44,13 @@ public class UserService {
     return "회원가입 성공";
   }
 
-  public User login(String loginId, String password) {
+  public UserDTO login(String loginId, String password) {
     User user = userRepository.findByLoginId(loginId).orElse(null);
 
     if(user == null || !passwordEncoder.matches(password, user.getPassword())) {
       return null;
     }
-    return user;
+    return user.toDTO();
   }
 
   @Transactional
@@ -62,8 +63,7 @@ public class UserService {
 
     user.get().setName(userDTO.getName());
     user.get().setEmail(userDTO.getEmail());
-
-    log.info("Updating user: {}", user);
+    user.get().setPhone(userDTO.getPhone());
 
     return "회원 정보 수정 성공";
   }
@@ -87,6 +87,6 @@ public class UserService {
     user.get().setPassword(passwordEncoder.encode(password));
     log.info("Updating password: {}", user);
 
-    return "비밀번호 수정에 성공";
+    return "비밀번호 수정 성공";
   }
 }
