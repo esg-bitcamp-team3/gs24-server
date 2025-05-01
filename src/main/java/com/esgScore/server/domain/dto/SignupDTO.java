@@ -19,5 +19,8 @@ public class SignupDTO {
   @Email(message = "이메일 형식이 아닙니다.")
   private String email;
 
+  @NotEmpty(message = "전화 번호를 입력해주세요.")
+  private String phone;
+
 //  private Boolean isAuthorized;
 }
