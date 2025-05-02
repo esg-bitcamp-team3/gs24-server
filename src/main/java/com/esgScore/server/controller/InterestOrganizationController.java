@@ -59,7 +59,7 @@ public class InterestOrganizationController {
 
   @DeleteMapping
   public ResponseEntity<String> deleteInterestOrganization(@Login User user, @RequestBody String organizationName) {
-    Optional<Organization> organizationOptional = organizationRepository.findByName(organizationName);
+    Optional<Organization> organizationOptional = organizationRepository.findByCompanyName(organizationName);
 
     if (organizationOptional.isEmpty()) {
       return ResponseEntity.ok("없는 기업입니다.");

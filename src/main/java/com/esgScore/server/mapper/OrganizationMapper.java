@@ -7,7 +7,7 @@ public class OrganizationMapper {
     public static OrganizationDTO toDTO(Organization organization) {
         return OrganizationDTO.builder()
 //                        .id(organization.getId())
-                                .name(organization.getName())
+                                .companyName(organization.getCompanyName())
                                         .build();
     }
 
@@ -18,7 +18,7 @@ public class OrganizationMapper {
 
         return Organization.builder()
 //                .id(dto.getId())
-                .name(dto.getName())
+                .companyName(dto.getCompanyName())
                 .build();
     }
 }

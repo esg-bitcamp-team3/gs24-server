@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 
 @Data
@@ -18,6 +19,12 @@ public class Organization {
   @Id
   private String id;
 
-  private String name;
+  @Field("기업명")
+  private String companyName;
+
+  @Field("기업코드")
+  private String companyCode;
+
+
 
 }
