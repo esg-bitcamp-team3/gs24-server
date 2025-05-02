@@ -8,5 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class OrganizationDTO {
-  private String name;
+  private String id;
+  private String companyName;
+  private String companyCode;
 }

@@ -50,8 +50,8 @@ public class OrganizationService {
     Organization organization = organizationRepository.findById(id).orElseThrow(() -> new NotFoundException("Organization not found"));
 
 
-    if (organizationDTO.getName() != null) {
-      organization.setName(organizationDTO.getName());
+    if (organizationDTO.getCompanyName() != null) {
+      organization.setCompanyName(organizationDTO.getCompanyName());
     }
 
     Organization updatedOrganization = organizationRepository.save(organization);
