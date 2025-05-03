@@ -38,7 +38,5 @@ public class User {
     return this;
   }
 
-  private List<Organization> interestOrganization = new ArrayList<>();
-
-  public UserDTO toDTO() { return new UserDTO(id, name, email, phone, interestOrganization); }
+  public UserDTO toDTO() { return new UserDTO(id, name, email, phone); }
 }
