@@ -1,6 +1,5 @@
 package com.esgScore.server.domain;
 
-import com.esgScore.server.domain.dto.OrganizationInfoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +18,8 @@ public class InterestOrganization {
   @Id
   private String id;
 
-  private String organizationId;
   private String userId;
+  private String organizationId;
+
   private LocalDateTime checkTime;
 }

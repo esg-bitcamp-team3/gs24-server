@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -62,6 +63,16 @@ public class OrganizationService {
   public void delete(String id) {
     Organization organization = organizationRepository.findById(id).orElseThrow(() -> new NotFoundException("Organization not found"));
     organizationRepository.delete(organization);
+  }
+
+  public Map<String, String> getNamesByIds(List<String> organizationIds) {
+    List<Organization> organizations = organizationRepository.findByIdIn(organizationIds);
+
+    return organizations.stream()
+      .collect(Collectors.toMap(
+        Organization::getId,
+        Organization::getCompanyName
+      ));
   }
 
 }

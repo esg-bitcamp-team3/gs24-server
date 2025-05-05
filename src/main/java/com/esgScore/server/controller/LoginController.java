@@ -1,15 +1,14 @@
 package com.esgScore.server.controller;
 
-import com.esgScore.server.domain.User;
 import com.esgScore.server.domain.dto.SignupDTO;
 import com.esgScore.server.domain.dto.LoginDTO;
 import com.esgScore.server.domain.dto.UserDTO;
-import com.esgScore.server.repository.UserRepository;
 import com.esgScore.server.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class LoginController {
   private final UserService userService;
-  private final UserRepository userRepository;
 
   @PostMapping("/signup")
   public ResponseEntity<String> signUp(@Validated @RequestBody SignupDTO signupDTO) {
@@ -28,10 +26,10 @@ public class LoginController {
     String message = userService.createUser(signupDTO);
 
     if(message.equals("이미 가입된 로그인 아이디입니다.")){
-      return ResponseEntity.status(409).body(message);
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
     }
 
-    return ResponseEntity.created(null).body(message);
+    return ResponseEntity.status(HttpStatus.CREATED).body(message);
   }
 
   @PostMapping("/login")
@@ -41,7 +39,7 @@ public class LoginController {
 
     // 로그인 실패
     if(user == null){
-      return ResponseEntity.status(401).build();
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     HttpSession session = request.getSession();
@@ -69,8 +67,8 @@ public class LoginController {
     UserDTO user = (UserDTO) session.getAttribute("user");
 
     log.info("Login user: {}", user);
-    if(user == null || userRepository.findById(user.getId()).isEmpty()){
-      return ResponseEntity.status(401).build();
+    if(user == null || userService.getUser(user.getId()) == null){
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     return ResponseEntity.ok().build();

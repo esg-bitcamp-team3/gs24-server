@@ -24,12 +24,12 @@ public class UserService {
   @Transactional
   public String createUser(SignupDTO signupDTO) {
 
-    if(userRepository.findByLoginId(signupDTO.getLoginId()).isPresent()) {
+    if(userRepository.findById(signupDTO.getLoginId()).isPresent()) {
       return "이미 가입된 로그인 아이디입니다.";
     }
 
     User createUser = User.builder()
-      .loginId(signupDTO.getLoginId())
+      .id(signupDTO.getLoginId())
       .password(signupDTO.getPassword())
       .email(signupDTO.getEmail())
       .name(signupDTO.getName())
@@ -46,7 +46,7 @@ public class UserService {
   }
 
   public UserDTO login(String loginId, String password) {
-    User user = userRepository.findByLoginId(loginId).orElse(null);
+    User user = userRepository.findById(loginId).orElse(null);
 
     if(user == null || !passwordEncoder.matches(password, user.getPassword())) {
       return null;
