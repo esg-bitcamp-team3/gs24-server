@@ -10,12 +10,20 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * ESG 등급 조회 요청을 처리하는 REST 컨트롤러
+ */
 @RestController
 @RequestMapping("/api/esg-ratings")
 @RequiredArgsConstructor
 public class EsgRatingController {
     private final EsgRatingService esgRatingService;
 
+    /**
+     * 특정 조직 ID에 해당하는 모든 ESG 등급 정보를 반환하는 API
+     * @param organizationId 조직의 고유 식별자
+     * @return 해당 조직의 ESG 등급 정보를 담은 DTO 리스트를 ResponseEntity로 감싸 반환
+     */
     @GetMapping("/{organizationId}")
     public ResponseEntity<List<EsgRatingDTO>> getAllEsgRatings(@PathVariable String organizationId)  {
 
