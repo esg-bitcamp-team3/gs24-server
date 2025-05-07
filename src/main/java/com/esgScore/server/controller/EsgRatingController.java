@@ -22,4 +22,9 @@ public class EsgRatingController {
     public EsgRating getRatingByCompanyName(@PathVariable String companyName) {
         return esgRatingRepository.findByCompanyName(companyName);
     }
+
+    @PostMapping
+    public EsgRating createRating(@RequestBody EsgRating esgRating) {
+        return esgRatingRepository.save(esgRating);
+    }
 }
