@@ -17,7 +17,7 @@ public class EsgCsvImportController {
     private final EsgCsvImportService esgCsvImportService;
 
     @PostMapping("/csv")
-    public ResponseEntity<String> importEsg(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadCsv(@RequestParam("file") MultipartFile file) {
         try {
             esgCsvImportService.importCsvData(file);
             return ResponseEntity.ok("CSV 파일이 성공적으로 업로드되었습니다.");
@@ -25,5 +25,4 @@ public class EsgCsvImportController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("CSV 업로드 실패:" + e.getMessage());
         }
     }
-
 }

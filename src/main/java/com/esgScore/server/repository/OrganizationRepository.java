@@ -5,6 +5,7 @@ import com.esgScore.server.domain.Organization;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,4 +14,7 @@ public interface OrganizationRepository extends MongoRepository<Organization, St
   Optional<Organization> findByCompanyName(String companyName);
 
   List<Organization> findByIdIn(List<String> ids);
+
+  Optional<Organization> findByCompanyCode(String code);
+
 }

@@ -2,10 +2,9 @@ package com.esgScore.server.service;
 
 import com.esgScore.server.domain.EsgRating;
 import com.esgScore.server.domain.Organization;
-import com.esgScore.server.repository.EsgCsvImportRepository;
+import com.esgScore.server.repository.EsgRatingRepository;
 import com.esgScore.server.repository.OrganizationRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.mongodb.core.aggregation.BooleanOperators;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,35 +17,38 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class EsgCsvImportService {
 
-//    private final EsgCsvImportRepository esgCsvImportRepository;
     private final OrganizationRepository organizationRepository;
+    private final EsgRatingRepository esgRatingRepository;
 
     public void importCsvData (MultipartFile file) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
+//        esgRatingRepository.deleteAll();
         reader.readLine();
 
         String line;
         while ((line = reader.readLine()) != null) {
             String[] data = line.split(",");
 
-            int no = Integer.parseInt(data[0]);
-            String name = data[1];
-            String code = data[2];
-            String esgGrade = data[3];
-            String environment = data[4];
-            String social = data[5];
-            String governance = data[6];
+            int no = Integer.parseInt(data[0].trim());
+            String name = data[1].trim();
+            String code = data[2].trim();
+            String esgGrade = data[3].trim();
+            String environment = data[4].trim();
+            String social = data[5].trim();
+            String governance = data[6].trim();
             int year = Integer.parseInt(data[7].trim());
 
             Organization organization = organizationRepository
-                    .findById(String.valueOf(no))
-                    .orElseGet(() -> organizationRepository.save(new Organization(null, name, code)));
-
-            Organization org = new Organization();
-            org.setCompanyCode(code);
-            org.setCompanyName(name);
+                    .findByCompanyCode(code)
+                    .orElseGet(() -> {
+                        Organization org = new Organization();
+                        org.setCompanyName(name);
+                        org.setCompanyCode(code);
+                        return organizationRepository.save(org);
+                    });
 
             EsgRating rating  = new EsgRating();
+            rating.setOrganizationId(organization.getId());
             rating.setNo(no);
             rating.setYear(year);
             rating.setEnvironment(environment);
@@ -54,9 +56,7 @@ public class EsgCsvImportService {
             rating.setGovernance(governance);
             rating.setEsgGrade(esgGrade);
 
-            EsgCsvImportRepository repository = new EsgCsvImportRepository();
-
-            repository.save(rating);
+            esgRatingRepository.save(rating);
         }
     }
 }

@@ -36,4 +36,16 @@ public class EsgRatingController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @GetMapping("/code/{organizationCode}")
+    public ResponseEntity<List<EsgRatingDTO>> getAllEsgRatingsByOrganizationCode(@PathVariable String organizationCode)  {
+
+        try {
+            List<EsgRatingDTO> esgrating = esgRatingService.getEsgRatingListByOrganizationCode(organizationCode);
+            return ResponseEntity.ok(esgrating);
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

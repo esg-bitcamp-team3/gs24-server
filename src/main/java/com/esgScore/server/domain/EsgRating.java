@@ -27,4 +27,7 @@ public class EsgRating {
     private String governance;
 
     private Integer year;
+
+    @DBRef
+    public Organization organization;
 }

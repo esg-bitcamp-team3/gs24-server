@@ -2,6 +2,7 @@ package com.esgScore.server.service;
 
 import com.esgScore.server.domain.dto.EsgRatingDTO;
 import com.esgScore.server.domain.dto.OrganizationDTO;
+import com.esgScore.server.exceptions.NotFoundException;
 import com.esgScore.server.repository.EsgRatingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,14 @@ public class EsgRatingService {
         OrganizationDTO organization = organizationService.getById(organizationId);
 
         return esgRatingRepository.findByOrganizationId(organizationId).stream()
+                .map(EsgRatingDTO::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<EsgRatingDTO> getEsgRatingListByOrganizationCode(String organizationCode) {
+        OrganizationDTO organization = organizationService.getByCode(organizationCode);
+
+        return esgRatingRepository.findByOrganizationId(organization.getId()).stream()
                 .map(EsgRatingDTO::toDTO)
                 .collect(Collectors.toList());
     }
