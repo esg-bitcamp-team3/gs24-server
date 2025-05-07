@@ -26,5 +26,4 @@ public class Organization {
   private String companyCode;
 
 
-
 }
