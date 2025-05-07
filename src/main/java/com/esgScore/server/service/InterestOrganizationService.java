@@ -4,6 +4,7 @@ import com.esgScore.server.domain.InterestOrganization;
 import com.esgScore.server.domain.dto.OrganizationInfoDTO;
 import com.esgScore.server.domain.dto.UserDTO;
 import com.esgScore.server.domain.dto.UserOrganizationListDTO;
+import com.esgScore.server.exceptions.NotFoundException;
 import com.esgScore.server.repository.InterestOrganizationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,37 +25,21 @@ public class InterestOrganizationService {
 
   public UserOrganizationListDTO getUserOrganizationListDTO(String userId) {
     UserDTO loginUser = userService.getUser(userId);
-    List<InterestOrganization> interestOrganizations = interestOrganizationRepository.findByUserId(loginUser.getId());
-
-    // 효율적?
-    List<String> organizationIds = interestOrganizations.stream()
-      .map(InterestOrganization::getOrganizationId)
-      .distinct()
-      .toList();
-    Map<String, String> organizationNameMap = organizationService.getNamesByIds(organizationIds);
-    // Map<orgId, orgName>
+    List<InterestOrganization> interestOrganizations = interestOrganizationRepository.findListByUserId(loginUser.getId()
+      .describeConstable().orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다.")));
 
     List<OrganizationInfoDTO> organizationInfoDTOList = interestOrganizations.stream()
-      .map(org -> OrganizationInfoDTO.builder()
-        .organizationId(org.getOrganizationId())
-        .name(organizationNameMap.getOrDefault(org.getOrganizationId(), ""))
-        .checkTime(org.getCheckTime())
-        .build())
+      .map(io -> OrganizationInfoDTO.toDTO(io, organizationService.getById(io.getOrganizationId())))
       .collect(Collectors.toList());
 
-    return UserOrganizationListDTO.builder()
-      .userId(loginUser.getId())
-      .username(loginUser.getName())
-      .organizationList(organizationInfoDTOList)
-      .build();
+    return UserOrganizationListDTO.toDTO(loginUser, organizationInfoDTOList);
   }
 
-  public String addInterestOrganization(String userId, String organizationId) {
-    if(userService.getUser(userId) == null || organizationService.getById(organizationId) == null) {
-      return "정보가 없습니다.";
-    }
+  public String addInterestOrganization(UserDTO user, String organizationId) {
+    organizationService.getById(organizationId);
+
     InterestOrganization addInterestOrganization = InterestOrganization.builder()
-      .userId(userId)
+      .userId(user.getId())
       .organizationId(organizationId)
       .checkTime(LocalDateTime.now())
       .build();
@@ -63,14 +48,8 @@ public class InterestOrganizationService {
     return "추가 성공";
   }
 
-  public String deleteInterestOrganization(String userId, String organizationId) {
-    InterestOrganization interestOrganization = interestOrganizationRepository.findByUserIdAndOrganizationId(userId, organizationId).orElse(null);
-    if(interestOrganization == null) {
-      return "없는 회원입니다";
-    }
-    if(!interestOrganization.getOrganizationId().equals(organizationId)) {
-      return "관심 기업이 아닙니다";
-    }
+  public String deleteInterestOrganization(String id) {
+    InterestOrganization interestOrganization = interestOrganizationRepository.findById(id).orElseThrow(() -> new NotFoundException("없는 정보 입니다."));
 
     interestOrganizationRepository.delete(interestOrganization);
     return "삭제 성공";
