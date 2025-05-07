@@ -23,6 +23,7 @@ import java.util.List;
 public class User {
   @Id
   private String id;
+  private String username;
   private String password;
 
   private String name;
@@ -36,5 +37,13 @@ public class User {
     return this;
   }
 
-  public UserDTO toDTO() { return new UserDTO(id, name, email, phone); }
+  public UserDTO toDTO() {
+    return UserDTO.builder()
+      .id(id)
+      .username(username)
+      .name(name)
+      .email(email)
+      .phone(phone)
+      .build();
+  }
 }

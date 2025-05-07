@@ -24,7 +24,4 @@ public class Organization {
 
   @Field("기업코드")
   private String companyCode;
-
-
-
 }

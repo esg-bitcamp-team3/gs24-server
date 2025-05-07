@@ -1,8 +1,12 @@
 package com.esgScore.server.service;
 
 import com.esgScore.server.domain.User;
+import com.esgScore.server.domain.dto.LoginDTO;
 import com.esgScore.server.domain.dto.SignupDTO;
 import com.esgScore.server.domain.dto.UserDTO;
+import com.esgScore.server.exceptions.DuplicateException;
+import com.esgScore.server.exceptions.InvalidRequestException;
+import com.esgScore.server.exceptions.NotFoundException;
 import com.esgScore.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,48 +27,43 @@ public class UserService {
 
   @Transactional
   public String createUser(SignupDTO signupDTO) {
+    Optional<User> user = userRepository.findByUsername(signupDTO.getUsername());
 
-    if(userRepository.findById(signupDTO.getLoginId()).isPresent()) {
-      return "이미 가입된 로그인 아이디입니다.";
+    if(user.isPresent()) {
+      throw new DuplicateException("존재하는 아이디 입니다.");
     }
 
     User createUser = User.builder()
-      .id(signupDTO.getLoginId())
-      .password(signupDTO.getPassword())
+      .username(signupDTO.getUsername())
+      .password(passwordEncoder.encode(signupDTO.getPassword()))
       .email(signupDTO.getEmail())
       .name(signupDTO.getName())
       .phone(signupDTO.getPhone())
-//      .isAuthorized(joinDTO.getIsAuthorized())
       .build();
-
-    createUser = createUser.hashPassword(passwordEncoder);
-    log.info("Creating user: {}", createUser);
 
     userRepository.save(createUser);
 
     return "회원가입 성공";
   }
 
-  public UserDTO login(String loginId, String password) {
-    User user = userRepository.findById(loginId).orElse(null);
+  public UserDTO login(LoginDTO loginDTO) {
+    User user = userRepository.findByUsername(loginDTO.getUsername()).orElseThrow(() -> new NotFoundException("없는 아이디 입니다."));
 
-    if(user == null || !passwordEncoder.matches(password, user.getPassword())) {
-      return null;
+    if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
+      throw new NotFoundException("비밀번호가 틀려요");
     }
     return user.toDTO();
   }
 
   @Transactional
   public String updateUser(String id, UserDTO userDTO) {
-    Optional<User> user = userRepository.findById(id);
+    User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("없는 사용자입니다."));
 
-    if(user.isEmpty()) {
-      return "해당하는 회원이 존재하지 않습니다.";
-    }
+    user.setName(userDTO.getName());
+    user.setEmail(userDTO.getEmail());
+    user.setPhone(userDTO.getPhone());
 
-    user.get().setName(userDTO.getName());
-    user.get().setEmail(userDTO.getEmail());
-    user.get().setPhone(userDTO.getPhone());
+    userRepository.save(user);
 
     return "회원 정보 수정 성공";
   }
@@ -76,17 +75,17 @@ public class UserService {
   }
 
   public UserDTO getUser(String id) {
-    return userRepository.findById(id).map(User::toDTO).orElse(null);
+    return userRepository.findById(id).map(User::toDTO).orElseThrow(() -> new NotFoundException("없는 사용자입니다."));
   }
 
   public String updatePassword(String id, String password) {
-    Optional<User> user = userRepository.findById(id);
+    User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("없는 사용자입니다."));
 
-    if(user.isEmpty()){
-      return "해당하는 회원이 존재하지 않습니다.";
+    if (!passwordEncoder.matches(password, user.getPassword())) {
+      throw new InvalidRequestException("현재 비밀번호가 일치하지 않습니다.", List.of("currentPassword"));
     }
-    user.get().setPassword(passwordEncoder.encode(password));
-    log.info("Updating password: {}", user);
+    user.setPassword(passwordEncoder.encode(password));
+    userRepository.save(user);
 
     return "비밀번호 수정 성공";
   }

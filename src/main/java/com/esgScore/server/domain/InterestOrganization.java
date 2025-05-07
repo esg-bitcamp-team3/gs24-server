@@ -1,5 +1,6 @@
 package com.esgScore.server.domain;
 
+import com.esgScore.server.domain.dto.InterestOrganizationDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

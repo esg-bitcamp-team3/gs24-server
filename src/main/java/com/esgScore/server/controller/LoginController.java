@@ -3,6 +3,7 @@ package com.esgScore.server.controller;
 import com.esgScore.server.domain.dto.SignupDTO;
 import com.esgScore.server.domain.dto.LoginDTO;
 import com.esgScore.server.domain.dto.UserDTO;
+import com.esgScore.server.exceptions.AuthenticationException;
 import com.esgScore.server.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -25,22 +26,13 @@ public class LoginController {
 
     String message = userService.createUser(signupDTO);
 
-    if(message.equals("이미 가입된 로그인 아이디입니다.")){
-      return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
-    }
-
     return ResponseEntity.status(HttpStatus.CREATED).body(message);
   }
 
   @PostMapping("/login")
   public ResponseEntity<String> logIn(@RequestBody LoginDTO loginDTO, HttpServletRequest request) {
 
-    UserDTO user = userService.login(loginDTO.getLoginId(), loginDTO.getPassword());
-
-    // 로그인 실패
-    if(user == null){
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
+    UserDTO user = userService.login(loginDTO);
 
     HttpSession session = request.getSession();
     session.setAttribute("user", user);
@@ -67,8 +59,8 @@ public class LoginController {
     UserDTO user = (UserDTO) session.getAttribute("user");
 
     log.info("Login user: {}", user);
-    if(user == null || userService.getUser(user.getId()) == null){
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    if(user == null){
+      throw new AuthenticationException("로그인이 필요합니다.") ;
     }
 
     return ResponseEntity.ok().build();
