@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/esg/import")
+@RequestMapping("/api/esg")
 @RequiredArgsConstructor
 public class EsgCsvImportController {
     private final EsgCsvImportService esgCsvImportService;

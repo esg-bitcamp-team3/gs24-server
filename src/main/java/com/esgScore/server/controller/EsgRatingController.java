@@ -1,6 +1,7 @@
 package com.esgScore.server.controller;
 
 import com.esgScore.server.domain.dto.EsgRatingDTO;
+import com.esgScore.server.domain.dto.OrganizationEsgRatingListDTO;
 import com.esgScore.server.exceptions.NotFoundException;
 import com.esgScore.server.service.EsgRatingService;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +26,12 @@ public class EsgRatingController {
      * @return 해당 조직의 ESG 등급 정보를 담은 DTO 리스트를 ResponseEntity로 감싸 반환
      */
     @GetMapping("/{organizationId}")
-    public ResponseEntity<List<EsgRatingDTO>> getAllEsgRatings(@PathVariable String organizationId)  {
+    public ResponseEntity<OrganizationEsgRatingListDTO> getAllEsgRatings(@PathVariable String organizationId)  {
 
         try {
-            List<EsgRatingDTO> esgrating = esgRatingService.getEsgRatingList(organizationId);
-            return ResponseEntity.ok(esgrating);
+            OrganizationEsgRatingListDTO organizationEsgRatingListDTO = esgRatingService.getEsgRatingListByOrganizationId(organizationId);
+
+            return ResponseEntity.ok(organizationEsgRatingListDTO);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {

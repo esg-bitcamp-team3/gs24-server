@@ -57,6 +57,10 @@ public class EsgCsvImportService {
             rating.setEsgGrade(esgGrade);
 
             esgRatingRepository.save(rating);
+//            organization.getEsgRatings().add(rating);
+
+//            organizationRepository.save(organization);
+//            esgRatingRepository.save(rating);
         }
     }
 }

@@ -2,9 +2,11 @@ package com.esgScore.server.service;
 
 import com.esgScore.server.domain.dto.EsgRatingDTO;
 import com.esgScore.server.domain.dto.OrganizationDTO;
-import com.esgScore.server.exceptions.NotFoundException;
+import com.esgScore.server.domain.dto.OrganizationEsgRatingListDTO;
+import com.esgScore.server.mapper.EsgRatingMapper;
 import com.esgScore.server.repository.EsgRatingRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EsgRatingService {
     private final EsgRatingRepository esgRatingRepository;
     private final OrganizationService organizationService;
@@ -24,19 +27,26 @@ public class EsgRatingService {
      * @param organizationId 조회할 조직의 고유 식별자(ID)
      * @return 조회된 ESG 등급 데이터를 변환한 EsgRatingDTO 리스트
      */
-    public List<EsgRatingDTO> getEsgRatingList(String organizationId) {
+    public OrganizationEsgRatingListDTO getEsgRatingListByOrganizationId(String organizationId) {
         OrganizationDTO organization = organizationService.getById(organizationId);
+        log.info("Get EsgRatingListByOrganizationId: {}", organizationId);
 
-        return esgRatingRepository.findByOrganizationId(organizationId).stream()
-                .map(EsgRatingDTO::toDTO)
+        List<EsgRatingDTO> esgRatingDTOList = esgRatingRepository.findByOrganizationId(organizationId).stream()
+                .map(EsgRatingMapper::toDTO)
                 .collect(Collectors.toList());
+        log.info("Get : {}", esgRatingDTOList);
+
+        return OrganizationEsgRatingListDTO.builder()
+                .organization(organization)
+                .ratings(esgRatingDTOList)
+                .build();
     }
 
     public List<EsgRatingDTO> getEsgRatingListByOrganizationCode(String organizationCode) {
         OrganizationDTO organization = organizationService.getByCode(organizationCode);
 
         return esgRatingRepository.findByOrganizationId(organization.getId()).stream()
-                .map(EsgRatingDTO::toDTO)
+                .map(EsgRatingMapper::toDTO)
                 .collect(Collectors.toList());
     }
 }
