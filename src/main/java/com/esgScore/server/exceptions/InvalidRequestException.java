@@ -1,5 +1,6 @@
 package com.esgScore.server.exceptions;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import java.util.StringJoiner;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class InvalidRequestException extends RuntimeException {
     private List<String> invalidFields;
 
