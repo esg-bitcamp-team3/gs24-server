@@ -2,10 +2,9 @@ package com.esgScore.server.service;
 
 import com.esgScore.server.domain.Organization;
 import com.esgScore.server.domain.dto.OrganizationDTO;
-import com.esgScore.server.exceptions.InvalidRequestException;
 import com.esgScore.server.exceptions.NotFoundException;
 import com.esgScore.server.mapper.OrganizationMapper;
-import com.esgScore.server.repository.OrganizationRepository;
+import com.esgScore.server.repository.main.OrganizationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

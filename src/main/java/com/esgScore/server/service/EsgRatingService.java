@@ -3,7 +3,7 @@ package com.esgScore.server.service;
 import com.esgScore.server.domain.dto.EsgRatingDTO;
 import com.esgScore.server.domain.dto.OrganizationDTO;
 import com.esgScore.server.exceptions.NotFoundException;
-import com.esgScore.server.repository.EsgRatingRepository;
+import com.esgScore.server.repository.main.EsgRatingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

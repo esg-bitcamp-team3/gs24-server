@@ -3,10 +3,8 @@ package com.esgScore.server.controller;
 import com.esgScore.server.domain.dto.CompanyInfoDTO;
 import com.esgScore.server.service.CompanyInfoService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -19,8 +17,14 @@ public class CompanyInfoController {
     public List<CompanyInfoDTO> getAll() {
         return companyInfoService.getAllCompanies();
     }
+
     @GetMapping("/search")
     public List<CompanyInfoDTO> searchCompanies(@RequestParam String keyword) {
         return companyInfoService.searchCompanies(keyword);
+    }
+
+    @GetMapping("/{id}")
+    public CompanyInfoDTO getByCompanyName(@PathVariable String id) {
+        return companyInfoService.getByCompanyName(id);
     }
 }
