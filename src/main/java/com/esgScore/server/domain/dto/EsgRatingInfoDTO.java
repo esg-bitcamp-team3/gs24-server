@@ -8,10 +8,10 @@ import lombok.Data;
  */
 @Builder
 @Data
-public class EsgRatingDTO {
+public class EsgRatingInfoDTO {
     private String id;              // ESG 데이터의 고유 ID
 
-    private String organizationId;  // 조직 ID
+//    private OrganizationDTO organization;
 
     private Integer no;             // 순번
 

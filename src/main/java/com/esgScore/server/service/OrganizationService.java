@@ -35,6 +35,13 @@ public class OrganizationService {
     return OrganizationMapper.toDTO(organization);
   }
 
+  public OrganizationDTO getByCode(String code) {
+    Organization organization = organizationRepository.findByCompanyCode(code)
+            .orElseThrow(() -> new NotFoundException("Organization not found"));
+
+    return OrganizationMapper.toDTO(organization);
+  }
+
   @Transactional
   public OrganizationDTO create(OrganizationDTO organizationDTO) {
      Organization organization = OrganizationMapper.fromDTO(organizationDTO);

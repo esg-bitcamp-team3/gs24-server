@@ -4,6 +4,8 @@ import com.esgScore.server.domain.dto.EsgRatingDTO;
 import com.esgScore.server.domain.dto.OrganizationDTO;
 import com.esgScore.server.exceptions.NotFoundException;
 import com.esgScore.server.repository.main.EsgRatingRepository;
+import com.esgScore.server.domain.dto.OrganizationEsgRatingListDTO;
+import com.esgScore.server.mapper.EsgRatingMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * ESG 등급 데이터를 조회하는 비즈니스 로직 담당 서비스 클래스
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -18,16 +23,36 @@ public class EsgRatingService {
     private final EsgRatingRepository esgRatingRepository;
     private final OrganizationService organizationService;
 
-    public List<EsgRatingDTO> getEsgRatingList(String organizationId) {
+    /**
+     * 특정 조직 ID로 ESG 등급 데이터를 조회하여 DTO 목록으로 변환하여 반환
+     * @param organizationId 조회할 조직의 고유 식별자(ID)
+     * @return 조회된 ESG 등급 데이터를 변환한 EsgRatingDTO 리스트
+     */
+    public OrganizationEsgRatingListDTO getEsgRatingListByOrganizationId(String organizationId) {
         OrganizationDTO organization = organizationService.getById(organizationId);
+        log.info("Get EsgRatingListByOrganizationId: {}", organizationId);
 
-        return esgRatingRepository.findByOrganizationId(organizationId).stream()
-                .map(EsgRatingDTO::toDTO)
+        List<EsgRatingDTO> esgRatingDTOList = esgRatingRepository.findByOrganizationId(organizationId).stream()
+                .map(EsgRatingMapper::toDTO)
+                .collect(Collectors.toList());
+        log.info("Get : {}", esgRatingDTOList);
+
+        return OrganizationEsgRatingListDTO.builder()
+                .organization(organization)
+                .ratings(esgRatingDTOList)
+                .build();
+    }
+
+    public List<EsgRatingDTO> getEsgRatingListByOrganizationCode(String organizationCode) {
+        OrganizationDTO organization = organizationService.getByCode(organizationCode);
+
+        return esgRatingRepository.findByOrganizationId(organization.getId()).stream()
+                .map(EsgRatingMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     public List<EsgRatingDTO> getAllEsgRatingListByYear(int year) {
-        List<EsgRatingDTO> esgRatingDTOList = esgRatingRepository.findByYear(year).stream().map(EsgRatingDTO::toDTO).toList();
+        List<EsgRatingDTO> esgRatingDTOList = esgRatingRepository.findByYear(year).stream().map(EsgRatingMapper::toDTO).toList();
         if(esgRatingDTOList.isEmpty()) {
             throw new NotFoundException("데이터를 찾을 수 없습니다.");
         }

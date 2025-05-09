@@ -5,7 +5,6 @@ import com.esgScore.server.domain.dto.rank.RankDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,7 +23,7 @@ public class RankingService {
 
     return esgRatingDTOList.stream()
       .map(esgRatingDTO ->
-        RankDTO.toDTO(organizationService.getById(esgRatingDTO.getOrganizationID()),esgRatingDTO))
+        RankDTO.toDTO(organizationService.getById(esgRatingDTO.getOrganizationId()),esgRatingDTO))
       .toList();
   }
 }
