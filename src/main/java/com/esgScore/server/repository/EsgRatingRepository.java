@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface EsgRatingRepository extends MongoRepository<EsgRating, String> {
     List<EsgRating> findByOrganizationId(String organizationId);
+    List<EsgRating> findByYear(Integer year);
 }
