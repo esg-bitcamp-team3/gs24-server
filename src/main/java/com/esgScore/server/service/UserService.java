@@ -88,4 +88,7 @@ public class UserService {
 
     return "비밀번호 수정 성공";
   }
+  public Boolean checkLogin(UserDTO user) {
+    return userRepository.findById(user.getId()).isPresent();
+  }
 }

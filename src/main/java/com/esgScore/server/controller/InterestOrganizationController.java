@@ -1,6 +1,7 @@
 package com.esgScore.server.controller;
 
 import com.esgScore.server.annotation.Login;
+import com.esgScore.server.domain.dto.InterestOrganizationDTO;
 import com.esgScore.server.domain.dto.UserDTO;
 import com.esgScore.server.domain.dto.UserOrganizationListDTO;
 import com.esgScore.server.service.InterestOrganizationService;
@@ -27,11 +28,10 @@ public class InterestOrganizationController {
   public ResponseEntity<String> addInterestOrganization(@Login UserDTO user, @PathVariable String id) {
       return ResponseEntity.status(HttpStatus.CREATED)
         .body(interestOrganizationService.addInterestOrganization(user, id));
-
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<String> deleteInterestOrganization(@Login UserDTO user, @PathVariable String id) {
-    return ResponseEntity.ok(interestOrganizationService.deleteInterestOrganization(id));
+    return ResponseEntity.ok(interestOrganizationService.deleteInterestOrganization(user, id));
   }
 }

@@ -53,7 +53,7 @@ public class LoginController {
   }
 
   @GetMapping("/session")
-  public ResponseEntity<Void> session(HttpServletRequest request) {
+  public ResponseEntity<Boolean> session(HttpServletRequest request) {
     HttpSession session = request.getSession();
 
     UserDTO user = (UserDTO) session.getAttribute("user");
@@ -63,6 +63,6 @@ public class LoginController {
       throw new AuthenticationException("로그인이 필요합니다.") ;
     }
 
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok(true);
   }
 }

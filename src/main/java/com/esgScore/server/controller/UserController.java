@@ -20,7 +20,7 @@ public class UserController {
   // 회원 조회
   @GetMapping
   public ResponseEntity<UserDTO> getUser(@Login UserDTO loginUser) {
-    UserDTO userDTO = userService.getUser(loginUser.getUsername());
+    UserDTO userDTO = userService.getUser(loginUser.getId());
     return ResponseEntity.ok(userDTO);
   }
 
@@ -51,5 +51,9 @@ public class UserController {
     }
   }
 
-
+  @GetMapping("/check")
+  public ResponseEntity<Boolean> checkLogin(@Login UserDTO loginUser) {
+    if(userService.checkLogin(loginUser)) return ResponseEntity.ok(true);
+    return ResponseEntity.ok(false);
+  }
 }
