@@ -24,7 +24,7 @@ public class CompanyInfoController {
     }
 
     @GetMapping("/{id}")
-    public CompanyInfoDTO getByCompanyName(@PathVariable String id) {
-        return companyInfoService.getByCompanyName(id);
+    public CompanyInfoDTO getCompanyInfoById(@PathVariable String id) {
+        return companyInfoService.getCompanyInfoById(id);
     }
 }

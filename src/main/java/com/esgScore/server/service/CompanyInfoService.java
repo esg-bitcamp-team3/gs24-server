@@ -26,7 +26,7 @@ public class CompanyInfoService {
                 .toList();
     }
 
-    public CompanyInfoDTO getByCompanyName(String organizationId) {
+    public CompanyInfoDTO getCompanyInfoById(String organizationId) {
         String companyName = organizationService.getById(organizationId).getCompanyName();
         return companyInfoRepository.findByCompanyName(companyName).map(CompanyInfoMapper::toDTO).orElseThrow(() -> new NotFoundException("기업이 없습니다."));
     }

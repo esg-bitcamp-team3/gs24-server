@@ -1,9 +1,11 @@
 package com.esgScore.server.service;
 
 import com.esgScore.server.domain.InterestOrganization;
+import com.esgScore.server.domain.dto.InterestOrganizationDTO;
 import com.esgScore.server.domain.dto.OrganizationInfoDTO;
 import com.esgScore.server.domain.dto.UserDTO;
 import com.esgScore.server.domain.dto.UserOrganizationListDTO;
+import com.esgScore.server.exceptions.DuplicateException;
 import com.esgScore.server.exceptions.NotFoundException;
 import com.esgScore.server.repository.main.InterestOrganizationRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +38,10 @@ public class InterestOrganizationService {
   }
 
   public String addInterestOrganization(UserDTO user, String organizationId) {
-    organizationService.getById(organizationId);
+
+    Optional<InterestOrganization> check = interestOrganizationRepository.findByUserIdAndOrganizationId(user.getId(), organizationId);
+
+    if(check.isPresent()) { throw new DuplicateException("이미 존재하는 기업입니다.");}
 
     InterestOrganization addInterestOrganization = InterestOrganization.builder()
       .userId(user.getId())
@@ -44,11 +50,13 @@ public class InterestOrganizationService {
       .build();
 
     interestOrganizationRepository.save(addInterestOrganization);
+
     return "추가 성공";
   }
 
-  public String deleteInterestOrganization(String id) {
-    InterestOrganization interestOrganization = interestOrganizationRepository.findById(id).orElseThrow(() -> new NotFoundException("없는 정보 입니다."));
+  public String deleteInterestOrganization(UserDTO user, String id) {
+    InterestOrganization interestOrganization = interestOrganizationRepository.findByUserIdAndOrganizationId(user.getId(), id)
+      .orElseThrow(() -> new NotFoundException("없는 정보 입니다."));
 
     interestOrganizationRepository.delete(interestOrganization);
     return "삭제 성공";
