@@ -59,9 +59,15 @@ public class UserService {
   public String updateUser(String id, UserDTO userDTO) {
     User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("없는 사용자입니다."));
 
-    user.setName(userDTO.getName());
-    user.setEmail(userDTO.getEmail());
-    user.setPhone(userDTO.getPhone());
+    if (userDTO.getName() != null) {
+      user.setName(userDTO.getName());
+    }
+    if (userDTO.getEmail() != null) {
+      user.setEmail(userDTO.getEmail());
+    }
+    if (userDTO.getPhone() != null) {
+      user.setPhone(userDTO.getPhone());
+    }
 
     userRepository.save(user);
 
@@ -78,17 +84,24 @@ public class UserService {
     return userRepository.findById(id).map(User::toDTO).orElseThrow(() -> new NotFoundException("없는 사용자입니다."));
   }
 
-  public String updatePassword(String id, String password) {
-    User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("없는 사용자입니다."));
-
+  public Boolean checkPassword(String id, String password) {
+    User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("없는 유저입니다"));
     if (!passwordEncoder.matches(password, user.getPassword())) {
       throw new InvalidRequestException("현재 비밀번호가 일치하지 않습니다.", List.of("currentPassword"));
     }
+    return true;
+  }
+
+  @Transactional
+  public String updatePassword(String id, String password) {
+    User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("없는 사용자입니다."));
+
     user.setPassword(passwordEncoder.encode(password));
     userRepository.save(user);
 
     return "비밀번호 수정 성공";
   }
+
   public Boolean checkLogin(UserDTO user) {
     return userRepository.findById(user.getId()).isPresent();
   }
