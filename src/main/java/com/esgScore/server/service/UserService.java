@@ -46,10 +46,11 @@ public class UserService {
   }
 
   public UserDTO login(LoginDTO loginDTO) {
-    User user = userRepository.findByUsername(loginDTO.getUsername()).orElseThrow(() -> new NotFoundException("없는 아이디 입니다."));
+    User user = userRepository.findByUsername(loginDTO.getUsername()).orElseThrow(() ->
+      new NotFoundException("아이디(로그인 전화번호, 로그인 전용 아이디) 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요."));
 
     if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
-      throw new NotFoundException("비밀번호가 틀려요");
+      throw new NotFoundException("아이디(로그인 전화번호, 로그인 전용 아이디) 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.");
     }
     return user.toDTO();
   }
