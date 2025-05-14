@@ -1,8 +1,10 @@
 package com.esgScore.server.controller;
 
+import com.esgScore.server.annotation.Login;
 import com.esgScore.server.domain.dto.SignupDTO;
 import com.esgScore.server.domain.dto.LoginDTO;
 import com.esgScore.server.domain.dto.UserDTO;
+import com.esgScore.server.domain.dto.UserUpdateDTO;
 import com.esgScore.server.exceptions.AuthenticationException;
 import com.esgScore.server.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
