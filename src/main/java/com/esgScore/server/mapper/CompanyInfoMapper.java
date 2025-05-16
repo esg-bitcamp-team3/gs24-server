@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 public class CompanyInfoMapper {
     public static CompanyInfoDTO toDTO(CompanyInfo entity) {
-        System.out.println("entity name: " + entity.getCompanyName());
+//        System.out.println("entity name: " + entity.getCompanyName());
         return new CompanyInfoDTO(
                 entity.getCompanyName(),
                 entity.getIndustry(),
