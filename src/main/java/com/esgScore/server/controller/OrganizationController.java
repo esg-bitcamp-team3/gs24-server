@@ -1,6 +1,9 @@
 package com.esgScore.server.controller;
 
+import com.esgScore.server.annotation.Login;
 import com.esgScore.server.domain.dto.OrganizationDTO;
+import com.esgScore.server.domain.dto.OrganizationWithInterestDTO;
+import com.esgScore.server.domain.dto.UserDTO;
 import com.esgScore.server.errors.ErrorResponse;
 import com.esgScore.server.exceptions.InvalidRequestException;
 import com.esgScore.server.exceptions.NotFoundException;
@@ -24,7 +27,7 @@ public class OrganizationController {
   private final OrganizationService organizationService;
 
   @GetMapping
-  public ResponseEntity<List<OrganizationDTO>> getAll() {
+  public ResponseEntity<List<OrganizationDTO>> getAll(@Login UserDTO user) {
       List<OrganizationDTO> organizations = organizationService.getAll();
 
       return ResponseEntity.ok(organizations);

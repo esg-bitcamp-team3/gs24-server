@@ -1,20 +1,23 @@
 package com.esgScore.server.service;
 
 import com.esgScore.server.domain.InterestOrganization;
-import com.esgScore.server.domain.dto.InterestOrganizationDTO;
-import com.esgScore.server.domain.dto.OrganizationInfoDTO;
-import com.esgScore.server.domain.dto.UserDTO;
-import com.esgScore.server.domain.dto.UserOrganizationListDTO;
+import com.esgScore.server.domain.dto.*;
+import com.esgScore.server.domain.dto.interest.InterestCompanyInfoDTO;
+import com.esgScore.server.domain.dto.interest.OrganizationWithInterestDTOPage;
 import com.esgScore.server.exceptions.DuplicateException;
 import com.esgScore.server.exceptions.NotFoundException;
 import com.esgScore.server.repository.main.InterestOrganizationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +27,7 @@ public class InterestOrganizationService {
   private final InterestOrganizationRepository interestOrganizationRepository;
   private final OrganizationService organizationService;
   private final UserService userService;
+  private final CompanyInfoService companyInfoService;
 
   public UserOrganizationListDTO getUserOrganizationListDTO(String userId) {
     UserDTO loginUser = userService.getUser(userId);
@@ -35,6 +39,12 @@ public class InterestOrganizationService {
       .collect(Collectors.toList());
 
     return UserOrganizationListDTO.toDTO(loginUser, organizationInfoDTOList);
+  }
+
+  public List<InterestOrganizationDTO> getInterestOrganizationDTOList(String userId) {
+    List<InterestOrganization> interestOrganizations = interestOrganizationRepository.findListByUserId(userId
+      .describeConstable().orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다.")));
+    return interestOrganizations.stream().map(InterestOrganizationDTO::toDTO).collect(Collectors.toList());
   }
 
   public String addInterestOrganization(UserDTO user, String organizationId) {
@@ -60,5 +70,40 @@ public class InterestOrganizationService {
 
     interestOrganizationRepository.delete(interestOrganization);
     return "삭제 성공";
+  }
+
+  public OrganizationWithInterestDTOPage getAllOrganizationsWithInterest(String userId, int page, int size) {
+    Pageable pageable = PageRequest.of(page, size);
+    Page<OrganizationDTO> organizationDTOPage = organizationService.getOrganizationDTOPage(pageable);
+
+    // user 의 관심 기업 list
+    List<InterestOrganizationDTO> interestList = getInterestOrganizationDTOList(userId);
+    Set<String> interestedOrganizationIds = interestList.stream()
+      .map(InterestOrganizationDTO::getOrganizationId)
+      .collect(Collectors.toSet());
+
+    List<OrganizationWithInterestDTO> organizationWithInterestDTOList = organizationDTOPage.getContent().stream()
+      .map(org -> OrganizationWithInterestDTO.builder()
+        .organization(org)
+        .isInterested(interestedOrganizationIds.contains(org.getId()))
+        .build())
+      .collect(Collectors.toList());
+
+    return OrganizationWithInterestDTOPage.builder()
+      .organizationWithInterestDTOList(organizationWithInterestDTOList)
+      .hasMore(organizationDTOPage.hasNext())
+      .build();
+  }
+
+  public List<InterestCompanyInfoDTO> getCompanyInfoInUser(String loginUser){
+    List<InterestOrganizationDTO> interestOrganizations = interestOrganizationRepository.findListByUserId(loginUser
+      .describeConstable().orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."))).stream().map(InterestOrganizationDTO::toDTO).toList();
+
+    return interestOrganizations.stream()
+      .map(io -> InterestCompanyInfoDTO.builder()
+        .interestOrganization(io)
+        .companyInfo(companyInfoService.getCompanyInfoById(io.getOrganizationId()))
+        .build())
+      .toList();
   }
 }

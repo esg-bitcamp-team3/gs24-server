@@ -7,6 +7,8 @@ import com.esgScore.server.mapper.OrganizationMapper;
 import com.esgScore.server.repository.main.OrganizationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,6 +80,10 @@ public class OrganizationService {
         Organization::getId,
         Organization::getCompanyName
       ));
+  }
+
+  public Page<OrganizationDTO> getOrganizationDTOPage(Pageable pageable) {
+    return organizationRepository.findAll(pageable).map(OrganizationMapper::toDTO);
   }
 
 }
