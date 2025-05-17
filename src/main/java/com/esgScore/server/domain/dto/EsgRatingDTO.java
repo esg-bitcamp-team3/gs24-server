@@ -11,7 +11,7 @@ import lombok.Data;
 public class EsgRatingDTO {
     private String id;              // ESG 데이터의 고유 ID
 
-    private String organizationId;  // 조직 ID
+    private String corporationId;  // 조직 ID
 
     private Integer no;             // 순번
 
