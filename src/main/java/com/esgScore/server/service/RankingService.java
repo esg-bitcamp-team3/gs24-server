@@ -23,7 +23,7 @@ public class RankingService {
 
     return esgRatingDTOList.stream()
       .map(esgRatingDTO ->
-        RankDTO.toDTO(organizationService.getById(esgRatingDTO.getOrganizationId()),esgRatingDTO))
+        RankDTO.toDTO(organizationService.getById(esgRatingDTO.getCorporationId()),esgRatingDTO))
       .toList();
   }
 }

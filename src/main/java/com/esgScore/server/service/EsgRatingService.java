@@ -32,7 +32,7 @@ public class EsgRatingService {
         OrganizationDTO organization = organizationService.getById(organizationId);
         log.info("Get EsgRatingListByOrganizationId: {}", organizationId);
 
-        List<EsgRatingDTO> esgRatingDTOList = esgRatingRepository.findByOrganizationId(organizationId).stream()
+        List<EsgRatingDTO> esgRatingDTOList = esgRatingRepository.findByCorporationId(organizationId).stream()
                 .map(EsgRatingMapper::toDTO)
                 .collect(Collectors.toList());
         log.info("Get : {}", esgRatingDTOList);
@@ -46,7 +46,7 @@ public class EsgRatingService {
     public List<EsgRatingDTO> getEsgRatingListByOrganizationCode(String organizationCode) {
         OrganizationDTO organization = organizationService.getByCode(organizationCode);
 
-        return esgRatingRepository.findByOrganizationId(organization.getId()).stream()
+        return esgRatingRepository.findByCorporationId(organization.getId()).stream()
                 .map(EsgRatingMapper::toDTO)
                 .collect(Collectors.toList());
     }

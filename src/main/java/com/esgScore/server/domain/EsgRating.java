@@ -1,5 +1,6 @@
 package com.esgScore.server.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -7,13 +8,13 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
-@Setter
+@Builder
 @Document(collection = "esg_ratings")
 public class EsgRating {
     @Id
     private String id;
 
-    private String organizationId;
+    private String corporationId;
 
     private Integer no;
 
@@ -26,7 +27,4 @@ public class EsgRating {
     private String governance;
 
     private Integer year;
-
-//    @DBRef
-//    public Organization organization;
 }

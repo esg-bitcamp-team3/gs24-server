@@ -9,7 +9,7 @@ public class EsgRatingMapper {
 
         return EsgRatingDTO.builder()
                 .id(esgRating.getId())
-                .organizationId(esgRating.getOrganizationId())
+                .corporationId(esgRating.getCorporationId())
                 .no(esgRating.getNo())
                 .esgGrade(esgRating.getEsgGrade())
                 .environment(esgRating.getEnvironment())
@@ -18,5 +18,21 @@ public class EsgRatingMapper {
                 .year(esgRating.getYear())
                 .build();
     }
+
+    public static EsgRating fromDTO(EsgRatingDTO esgRatingDTO) {
+        if (esgRatingDTO == null) return null;
+
+        return EsgRating.builder()
+                .id(esgRatingDTO.getId())
+                .corporationId(esgRatingDTO.getCorporationId())
+                .no(esgRatingDTO.getNo())
+                .esgGrade(esgRatingDTO.getEsgGrade())
+                .environment(esgRatingDTO.getEnvironment())
+                .social(esgRatingDTO.getSocial())
+                .governance(esgRatingDTO.getGovernance())
+                .year(esgRatingDTO.getYear())
+                .build();
+    }
+
 
 }
