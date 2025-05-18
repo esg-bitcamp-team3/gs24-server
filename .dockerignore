@@ -1,0 +1,26 @@
+# IntelliJ 관련 파일 및 폴더
+.idea/
+*.iml
+*.iws
+
+# Gradle 빌드 결과물 (빌드 시 클린 빌드하면 불필요)
+build/
+.gradle/
+
+# 로컬 환경 설정 파일
+*.log
+*.tmp
+*.swp
+.DS_Store
+
+# Git 관련
+.git
+.gitignore
+
+# Docker 관련
+Dockerfile
+docker-compose.yaml
+
+# 기타 OS별 불필요 파일
+Thumbs.db
+desktop.ini
