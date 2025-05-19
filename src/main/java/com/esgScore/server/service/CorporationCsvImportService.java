@@ -17,6 +17,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,13 +33,13 @@ public class CorporationCsvImportService {
             reader.readLine();
 
             while ((line = reader.readLine()) != null) {
-                String[] tokens = line.split(",", -1);
+                String[] tokens = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 
                 if (tokens.length < 5) continue;
 
                 String corpCode = String.format("%08d", Integer.parseInt(tokens[0].trim()));
                 String corpName = tokens[1].trim();
-                String corpEngName = tokens[2].trim();
+                String corpEngName = tokens[2].trim().replaceAll("^\"|\"$", "");
                 String stockCode = String.format("%06d", Integer.parseInt(tokens[3].trim()));
 
                 CorporationDetailDTO corpDTO = CorporationDetailDTO.builder()

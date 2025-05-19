@@ -12,4 +12,5 @@ public class OrganizationDTO {
   private String id;
   private String companyName;
   private String companyCode;
+//  private String corpCode;
 }
