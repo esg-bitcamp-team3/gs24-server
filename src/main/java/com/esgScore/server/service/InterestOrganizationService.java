@@ -2,7 +2,11 @@ package com.esgScore.server.service;
 
 import com.esgScore.server.domain.InterestOrganization;
 import com.esgScore.server.domain.dto.*;
+import com.esgScore.server.domain.dto.corporation.CorpWithInterestDTO;
+import com.esgScore.server.domain.dto.corporation.CorpWithInterestPage;
+import com.esgScore.server.domain.dto.corporation.CorporationDTO;
 import com.esgScore.server.domain.dto.interest.InterestCompanyInfoDTO;
+import com.esgScore.server.domain.dto.interest.InterestCorporationDTO;
 import com.esgScore.server.domain.dto.interest.OrganizationWithInterestDTOPage;
 import com.esgScore.server.exceptions.DuplicateException;
 import com.esgScore.server.exceptions.NotFoundException;
@@ -106,4 +110,5 @@ public class InterestOrganizationService {
         .build())
       .toList();
   }
+
 }

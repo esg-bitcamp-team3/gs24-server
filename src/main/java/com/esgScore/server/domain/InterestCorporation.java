@@ -6,21 +6,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "organization")
-public class Organization {
+@Document(collection = "InterestCorporation")
+public class InterestCorporation {
   @Id
   private String id;
 
-  @Field("기업명")
-  private String companyName;
+  private String userId;
+  private String corporationId;
 
-  @Field("기업코드")
-  private String companyCode;
-  private String corpCode;
+  private LocalDateTime checkTime;
 }

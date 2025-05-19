@@ -12,4 +12,5 @@ public class CorporationDTO {
   private String id;
   private String corpCode;
   private String corpName;
+  private String stockCode;
 }
