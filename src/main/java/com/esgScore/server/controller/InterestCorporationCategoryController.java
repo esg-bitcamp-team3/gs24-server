@@ -1,6 +1,6 @@
 package com.esgScore.server.controller;
 
-import com.esgScore.server.domain.dto.CorporationCategoryDTO;
+import com.esgScore.server.domain.dto.IdListDTO;
 import com.esgScore.server.domain.dto.InterestCorporationCategoryCreateDTO;
 import com.esgScore.server.domain.dto.InterestCorporationCategoryDTO;
 import com.esgScore.server.service.InterestCorporationCategoryService;
@@ -46,9 +46,15 @@ public class InterestCorporationCategoryController {
     return ResponseEntity.noContent().build();
   }
 
-  @PostMapping("/bulk")
-  public ResponseEntity<List<InterestCorporationCategoryDTO>> addCorporationToCategories(@RequestBody CorporationCategoryDTO corporationCategoryDTO) {
-    List<InterestCorporationCategoryDTO> interestCorporationCategoryDTOs = interestCorporationCategoryService.addCorporationToCategories(corporationCategoryDTO.getCorporationId(), corporationCategoryDTO.getCategoryIdList());
+  @PostMapping("/corporations/{corporationId}/categories")
+  public ResponseEntity<List<InterestCorporationCategoryDTO>> addCorporationToCategories(@RequestBody IdListDTO idListDTO, @PathVariable String corporationId) {
+    List<InterestCorporationCategoryDTO> interestCorporationCategoryDTOs = interestCorporationCategoryService.addCorporationToCategories(corporationId, idListDTO.getIdList());
+    return ResponseEntity.status(HttpStatus.CREATED).body(interestCorporationCategoryDTOs);
+  }
+
+  @PostMapping("/categories/{categoryId}/corporations")
+  public ResponseEntity<List<InterestCorporationCategoryDTO>> addCorporationsToCategory(@RequestBody IdListDTO idListDTO, @PathVariable String categoryId) {
+    List<InterestCorporationCategoryDTO> interestCorporationCategoryDTOs = interestCorporationCategoryService.addCorporationsToCategory(idListDTO.getIdList(), categoryId);
     return ResponseEntity.status(HttpStatus.CREATED).body(interestCorporationCategoryDTOs);
   }
 

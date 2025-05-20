@@ -113,6 +113,40 @@ public class InterestCorporationCategoryService {
     return result;
   }
 
+  @Transactional
+  public List<InterestCorporationCategoryDTO> addCorporationsToCategory(List<String> corporationIds, String categoryId) {
+    CategoryDTO categoryDTO = categoryService.getById(categoryId);
+    List<InterestCorporationCategoryDTO> result = new ArrayList<>();
+
+    for (String corporationId : corporationIds) {
+      CorporationDTO corporationDTO = corporationService.getById(corporationId);
+
+      String userId = categoryDTO.getUserId();
+
+      InterestCorporationDTO interestCorporationDTO = interestCorporationService.getByUserAndCorporation(userId, corporationId);
+
+      if (interestCorporationDTO == null) {
+        interestCorporationService.addInterestCorporation(userId, corporationId);
+        interestCorporationDTO = interestCorporationService.getByUserAndCorporation(userId, corporationId);
+      }
+
+      validateNotExists(interestCorporationDTO.getId(), categoryId);
+
+      InterestCorporationCategoryCreateDTO createDTO = InterestCorporationCategoryCreateDTO.builder()
+              .interestCorporationId(interestCorporationDTO.getId())
+              .categoryId(categoryId)
+              .build();
+
+      InterestCorporationCategory entity = InterestCorporationCategoryMapper.fromDTO(createDTO);
+      InterestCorporationCategory saved = interestCorporationCategoryRepository.save(entity);
+      InterestCorporationDetailDTO detailDTO = interestCorporationService.getById(interestCorporationDTO.getId());
+
+      result.add(InterestCorporationCategoryMapper.toDTO(saved, detailDTO, categoryDTO));
+    }
+
+    return result;
+  }
+
   public void delete(String id) {
     InterestCorporationCategory interestCorporationCategory = interestCorporationCategoryRepository.findById(id).orElseThrow(() -> new NotFoundException("카테고리 내 관심 기업을 찾을 수 없습니다."));
     interestCorporationCategoryRepository.delete(interestCorporationCategory);
