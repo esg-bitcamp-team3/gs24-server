@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 
 @Data
 @AllArgsConstructor
@@ -11,5 +13,5 @@ import lombok.Data;
 public class CorporationCategoryDTO {
   private String id;
   private String corporationId;
-  private String categoryId;
+  private List<String> categoryIdList;
 }
