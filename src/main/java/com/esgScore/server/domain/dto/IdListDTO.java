@@ -10,8 +10,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @Builder
-public class CorporationCategoryDTO {
-  private String id;
-  private String corporationId;
-  private List<String> categoryIdList;
+public class IdListDTO {
+  private List<String> idList;
 }
