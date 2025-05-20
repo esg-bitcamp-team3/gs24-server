@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/interestCorporation")
+@RequestMapping("/api/interest-corporations")
 @RequiredArgsConstructor
 @Slf4j
 public class InterestCorporationController {
@@ -22,7 +22,7 @@ public class InterestCorporationController {
 
   @GetMapping("/{id}")
   public ResponseEntity<Boolean> getInterestCorporation(@Login UserDTO user, @PathVariable String id){
-    return ResponseEntity.ok(interestCorporationService.getByUserAndCorporation(user.getId(), id));
+    return ResponseEntity.ok(interestCorporationService.existsByUserAndCorporation(user.getId(), id));
   }
 
   @PostMapping("/{id}")

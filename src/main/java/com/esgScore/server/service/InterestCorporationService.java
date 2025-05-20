@@ -44,9 +44,14 @@ public class InterestCorporationService {
 //
 //    return UsercorporationListDTO.toDTO(loginUser, corporationInfoDTOList);
 //  }
-  public boolean getByUserAndCorporation(String userId, String corpId) {
+  public boolean existsByUserAndCorporation(String userId, String corpId) {
     Optional<InterestCorporation> interestCorporation = interestcorporationRepository.findByUserIdAndCorporationId(userId, corpId);
     return interestCorporation.isPresent();
+  }
+
+  public InterestCorporationDTO getByUserAndCorporation(String userId, String corpId) {
+    Optional<InterestCorporation> interestCorporation = interestcorporationRepository.findByUserIdAndCorporationId(userId, corpId);
+    return interestCorporation.map(InterestCorporationMapper::toDTO).orElse(null);
   }
 
   public InterestCorporationDetailDTO getById(String id) {

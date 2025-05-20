@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface InterestCorporationCategoryRepository extends MongoRepository<InterestCorporationCategory, String> {
   Optional<InterestCorporationCategory> findByInterestCorporationId(String interestCorporationId);
   List<InterestCorporationCategory> findByCategoryId(String categoryId);
-
+  Optional<InterestCorporationCategory> findByCategoryIdAndInterestCorporationId(String categoryId, String interestCorporationId);
 }

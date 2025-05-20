@@ -9,6 +9,14 @@ import com.esgScore.server.domain.dto.interest.InterestCorporationDetailDTO;
 import java.util.List;
 
 public class InterestCorporationMapper {
+    public static InterestCorporationDTO toDTO(InterestCorporation interestCorporation) {
+        return InterestCorporationDTO.builder()
+                .id(interestCorporation.getId())
+                .userId(interestCorporation.getUserId())
+                .corporationId(interestCorporation.getCorporationId())
+                .checkTime(interestCorporation.getCheckTime())
+                .build();
+    }
     public static InterestCorporationDetailDTO toDetailDTO(InterestCorporation interestCorporation, CorporationDTO corporationDTO) {
         return InterestCorporationDetailDTO.builder()
                 .id(interestCorporation.getId())
