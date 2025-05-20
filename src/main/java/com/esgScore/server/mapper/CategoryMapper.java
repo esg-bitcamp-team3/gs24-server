@@ -10,6 +10,7 @@ public class CategoryMapper {
         return CategoryDTO.builder()
                 .id(category.getId())
                 .name(category.getName())
+                .userId(category.getUserId())
                 .build();
     }
 

@@ -1,12 +1,8 @@
 package com.esgScore.server.controller;
 
+import com.esgScore.server.domain.dto.CorporationCategoryDTO;
 import com.esgScore.server.domain.dto.InterestCorporationCategoryCreateDTO;
 import com.esgScore.server.domain.dto.InterestCorporationCategoryDTO;
-import com.esgScore.server.domain.dto.corporation.CorporationDTO;
-import com.esgScore.server.domain.dto.corporation.CorporationDetailDTO;
-import com.esgScore.server.exceptions.InvalidRequestException;
-import com.esgScore.server.exceptions.NotFoundException;
-import com.esgScore.server.service.CorporationService;
 import com.esgScore.server.service.InterestCorporationCategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +45,13 @@ public class InterestCorporationCategoryController {
     interestCorporationCategoryService.delete(id);
     return ResponseEntity.noContent().build();
   }
+
+  @PostMapping("/corporation")
+  public ResponseEntity<InterestCorporationCategoryDTO> addCorporationToCategory(@RequestBody CorporationCategoryDTO corporationCategoryDTO) {
+    InterestCorporationCategoryDTO interestCorporationCategoryDTO = interestCorporationCategoryService.addCorporationToCategory(corporationCategoryDTO.getCorporationId(), corporationCategoryDTO.getCategoryId());
+    return ResponseEntity.status(HttpStatus.CREATED).body(interestCorporationCategoryDTO);
+  }
+
 
 
 }
