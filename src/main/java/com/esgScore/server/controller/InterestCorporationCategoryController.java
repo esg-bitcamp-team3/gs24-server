@@ -33,7 +33,7 @@ public class InterestCorporationCategoryController {
     return ResponseEntity.status(HttpStatus.CREATED).body(interestCorporationCategoryDTO);
   }
 
-  @GetMapping("/{categoryId}")
+  @GetMapping("/category/{categoryId}")
   public ResponseEntity<List<InterestCorporationCategoryDTO>> getAllByCategoryId(@PathVariable String categoryId) {
     List<InterestCorporationCategoryDTO> interestCorporationCategoryDTOS = interestCorporationCategoryService.getAllByCategoryId(categoryId);
 
@@ -46,10 +46,10 @@ public class InterestCorporationCategoryController {
     return ResponseEntity.noContent().build();
   }
 
-  @PostMapping("/corporation")
-  public ResponseEntity<InterestCorporationCategoryDTO> addCorporationToCategory(@RequestBody CorporationCategoryDTO corporationCategoryDTO) {
-    InterestCorporationCategoryDTO interestCorporationCategoryDTO = interestCorporationCategoryService.addCorporationToCategory(corporationCategoryDTO.getCorporationId(), corporationCategoryDTO.getCategoryId());
-    return ResponseEntity.status(HttpStatus.CREATED).body(interestCorporationCategoryDTO);
+  @PostMapping("/bulk")
+  public ResponseEntity<List<InterestCorporationCategoryDTO>> addCorporationToCategories(@RequestBody CorporationCategoryDTO corporationCategoryDTO) {
+    List<InterestCorporationCategoryDTO> interestCorporationCategoryDTOs = interestCorporationCategoryService.addCorporationToCategories(corporationCategoryDTO.getCorporationId(), corporationCategoryDTO.getCategoryIdList());
+    return ResponseEntity.status(HttpStatus.CREATED).body(interestCorporationCategoryDTOs);
   }
 
 
