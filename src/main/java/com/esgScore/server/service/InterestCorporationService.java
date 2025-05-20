@@ -1,15 +1,15 @@
 package com.esgScore.server.service;
 
 import com.esgScore.server.domain.InterestCorporation;
-import com.esgScore.server.domain.InterestOrganization;
-import com.esgScore.server.domain.dto.*;
 import com.esgScore.server.domain.dto.corporation.CorpWithInterestDTO;
 import com.esgScore.server.domain.dto.corporation.CorpWithInterestPage;
 import com.esgScore.server.domain.dto.corporation.CorporationDTO;
 
 import com.esgScore.server.domain.dto.interest.InterestCorporationDTO;
+import com.esgScore.server.domain.dto.interest.InterestCorporationDetailDTO;
 import com.esgScore.server.exceptions.DuplicateException;
 import com.esgScore.server.exceptions.NotFoundException;
+import com.esgScore.server.mapper.InterestCorporationMapper;
 import com.esgScore.server.repository.main.InterestCorporationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,9 +44,16 @@ public class InterestCorporationService {
 //
 //    return UsercorporationListDTO.toDTO(loginUser, corporationInfoDTOList);
 //  }
-  public boolean getById(String userId, String corpId) {
+  public boolean getByUserAndCorporation(String userId, String corpId) {
     Optional<InterestCorporation> interestCorporation = interestcorporationRepository.findByUserIdAndCorporationId(userId, corpId);
     return interestCorporation.isPresent();
+  }
+
+  public InterestCorporationDetailDTO getById(String id) {
+    InterestCorporation interestCorporation = interestcorporationRepository.findById(id).orElseThrow(() -> new NotFoundException("관심 기업을 찾을 수 없습니다."));
+    CorporationDTO corporationDTO = corporationService.getById(interestCorporation.getCorporationId());
+
+    return InterestCorporationMapper.toDetailDTO(interestCorporation, corporationDTO);
   }
 
   public String addInterestCorporation(String userId, String corporationId) {

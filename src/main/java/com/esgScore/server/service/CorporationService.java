@@ -31,7 +31,14 @@ public class CorporationService {
               .collect(Collectors.toList());
   }
 
-  public CorporationDetailDTO getById(String id) {
+  public CorporationDTO getById(String id) {
+    Corporation corporation = corporationRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Corporation not found"));
+
+    return CorporationMapper.toDTO(corporation);
+  }
+
+  public CorporationDetailDTO getDetailsById(String id) {
     Corporation corporation = corporationRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("Corporation not found"));
 

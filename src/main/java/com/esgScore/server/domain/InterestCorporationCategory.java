@@ -7,19 +7,16 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "interest_corporation")
-public class InterestCorporation {
+@Document(collection = "interest_corporation_category")
+public class InterestCorporationCategory {
   @Id
   private String id;
 
-  private String userId;
-  private String corporationId;
+  private String interestCorporationId;
 
-  private LocalDateTime checkTime;
+  private String categoryId;
 }
