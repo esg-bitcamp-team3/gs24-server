@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/interestCorporation")
+@RequestMapping("/api/interest-corporations")
 @RequiredArgsConstructor
 @Slf4j
 public class InterestCorporationController {
