@@ -4,11 +4,14 @@ import com.esgScore.server.annotation.Login;
 import com.esgScore.server.domain.dto.UserDTO;
 
 import com.esgScore.server.domain.dto.corporation.CorpWithInterestPage;
+import com.esgScore.server.domain.dto.interest.InterestCorporationDTO;
 import com.esgScore.server.service.InterestCorporationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/interestCorporation")
@@ -19,7 +22,7 @@ public class InterestCorporationController {
 
   @GetMapping("/{id}")
   public ResponseEntity<Boolean> getInterestCorporation(@Login UserDTO user, @PathVariable String id){
-    return ResponseEntity.ok(interestCorporationService.getById(user.getId(), id));
+    return ResponseEntity.ok(interestCorporationService.getByUserAndCorporation(user.getId(), id));
   }
 
   @PostMapping("/{id}")
@@ -54,6 +57,12 @@ public class InterestCorporationController {
                                                                            @RequestParam(defaultValue = "20") int size) {
     CorpWithInterestPage list = interestCorporationService.getAllCorpsWithInterest(user.getId(), page, size);
     return ResponseEntity.ok(list);
+  }
+
+  @GetMapping("/my")
+  public ResponseEntity<List<InterestCorporationDTO>> getCorporationsWithInterest(@Login UserDTO user) {
+    List<InterestCorporationDTO> interestCorporationDTOS = interestCorporationService.getInterestcorporationDTOList(user.getId());
+    return ResponseEntity.ok(interestCorporationDTOS);
   }
 
 //  @GetMapping("/interest")
