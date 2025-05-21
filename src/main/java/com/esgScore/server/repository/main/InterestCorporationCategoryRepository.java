@@ -9,7 +9,8 @@ import java.util.Optional;
 
 @Qualifier("MongoRepository")
 public interface InterestCorporationCategoryRepository extends MongoRepository<InterestCorporationCategory, String> {
-  Optional<InterestCorporationCategory> findByInterestCorporationId(String interestCorporationId);
+  List<InterestCorporationCategory> findByInterestCorporationId(String interestCorporationId);
   List<InterestCorporationCategory> findByCategoryId(String categoryId);
   Optional<InterestCorporationCategory> findByCategoryIdAndInterestCorporationId(String categoryId, String interestCorporationId);
+  Integer countByInterestCorporationId(String interestCorporationId);
 }

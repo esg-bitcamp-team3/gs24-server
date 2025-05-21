@@ -1,8 +1,10 @@
 package com.esgScore.server.controller;
 
+import com.esgScore.server.annotation.Login;
 import com.esgScore.server.domain.dto.IdListDTO;
 import com.esgScore.server.domain.dto.InterestCorporationCategoryCreateDTO;
 import com.esgScore.server.domain.dto.InterestCorporationCategoryDTO;
+import com.esgScore.server.domain.dto.UserDTO;
 import com.esgScore.server.service.InterestCorporationCategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,14 +49,15 @@ public class InterestCorporationCategoryController {
   }
 
   @PostMapping("/corporations/{corporationId}/categories")
-  public ResponseEntity<List<InterestCorporationCategoryDTO>> addCorporationToCategories(@RequestBody IdListDTO idListDTO, @PathVariable String corporationId) {
-    List<InterestCorporationCategoryDTO> interestCorporationCategoryDTOs = interestCorporationCategoryService.addCorporationToCategories(corporationId, idListDTO.getIdList());
+  public ResponseEntity<List<InterestCorporationCategoryDTO>> addCorporationToCategories(@Login UserDTO user, @RequestBody IdListDTO idListDTO, @PathVariable String corporationId) {
+    List<InterestCorporationCategoryDTO> interestCorporationCategoryDTOs = interestCorporationCategoryService.addCorporationToCategories(corporationId, idListDTO.getIdList(), user.getId());
     return ResponseEntity.status(HttpStatus.CREATED).body(interestCorporationCategoryDTOs);
   }
 
   @PostMapping("/categories/{categoryId}/corporations")
-  public ResponseEntity<List<InterestCorporationCategoryDTO>> addCorporationsToCategory(@RequestBody IdListDTO idListDTO, @PathVariable String categoryId) {
-    List<InterestCorporationCategoryDTO> interestCorporationCategoryDTOs = interestCorporationCategoryService.addCorporationsToCategory(idListDTO.getIdList(), categoryId);
+  public ResponseEntity<List<InterestCorporationCategoryDTO>> addCorporationsToCategory(@Login UserDTO user, @RequestBody IdListDTO idListDTO, @PathVariable String categoryId) {
+    log.info(idListDTO.getIdList().toString());
+    List<InterestCorporationCategoryDTO> interestCorporationCategoryDTOs = interestCorporationCategoryService.addCorporationsToCategory(idListDTO.getIdList(), categoryId, user.getId());
     return ResponseEntity.status(HttpStatus.CREATED).body(interestCorporationCategoryDTOs);
   }
 

@@ -82,6 +82,10 @@ public class InterestCorporationService {
     return "관심이 없어 졌어요.";
   }
 
+  public void deleteById(String id) {
+    interestcorporationRepository.deleteById(id);
+  }
+
   public List<InterestCorporationDTO> getInterestcorporationDTOList(String userId) {
     List<InterestCorporation> interestCorporations = interestcorporationRepository.findListByUserId(userId
       .describeConstable().orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다.")));
@@ -122,6 +126,18 @@ public class InterestCorporationService {
       .corpWithInterestDTOList(corporationWithInterestDTOList)
       .hasMore(corporationDTOS.hasNext())
       .build();
+  }
+
+  public List<InterestCorporationDTO> getAllByCorporationId(String corporationId) {
+    List<InterestCorporation> interestCorporations = interestcorporationRepository.findListByCorporationId(corporationId);
+
+    return interestCorporations.stream().map(InterestCorporationDTO::toDTO).collect(Collectors.toList());
+  }
+
+  public List<InterestCorporationDTO> getAllByUserId(String userId) {
+    List<InterestCorporation> interestCorporations = interestcorporationRepository.findListByUserId(userId);
+
+    return interestCorporations.stream().map(InterestCorporationDTO::toDTO).collect(Collectors.toList());
   }
 
 }

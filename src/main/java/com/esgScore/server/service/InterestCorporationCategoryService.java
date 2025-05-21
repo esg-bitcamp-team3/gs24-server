@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -81,15 +82,66 @@ public class InterestCorporationCategoryService {
   }
 
   @Transactional
-  public List<InterestCorporationCategoryDTO> addCorporationToCategories(String corporationId, List<String> categoryIds) {
+  public List<InterestCorporationCategoryDTO> addCorporationToCategories(String corporationId, List<String> categoryIds, String userId) {
     CorporationDTO corporationDTO = corporationService.getById(corporationId);
+
+
+    // find existing interest corporation
+    InterestCorporationDTO interestCorporationDTO = interestCorporationService.getByUserAndCorporation(userId, corporationId);
+
+    // if not exist, then create new
+    if (interestCorporationDTO == null) {
+      interestCorporationService.addInterestCorporation(userId, corporationId);
+      interestCorporationDTO = interestCorporationService.getByUserAndCorporation(userId, corporationId);
+    }
+
+    // delete existing categories
+    List<InterestCorporationCategory> existingCategories = interestCorporationCategoryRepository.findByInterestCorporationId(interestCorporationDTO.getId());
+    interestCorporationCategoryRepository.deleteAll(existingCategories);
+
+    //if id list is empty then delete interest
+    if (categoryIds.isEmpty())
+      interestCorporationService.deleteById(interestCorporationDTO.getId());
+
+
+    // create
     List<InterestCorporationCategoryDTO> result = new ArrayList<>();
 
     for (String categoryId : categoryIds) {
       CategoryDTO categoryDTO = categoryService.getById(categoryId);
-      String userId = categoryDTO.getUserId();
 
-      InterestCorporationDTO interestCorporationDTO = interestCorporationService.getByUserAndCorporation(userId, corporationId);
+      validateNotExists(interestCorporationDTO.getId(), categoryId);
+
+      InterestCorporationCategoryCreateDTO createDTO = InterestCorporationCategoryCreateDTO.builder()
+              .interestCorporationId(interestCorporationDTO.getId())
+              .categoryId(categoryId)
+              .build();
+
+      InterestCorporationCategory entity = InterestCorporationCategoryMapper.fromDTO(createDTO);
+      InterestCorporationCategory saved = interestCorporationCategoryRepository.save(entity);
+      InterestCorporationDetailDTO detailDTO = interestCorporationService.getById(interestCorporationDTO.getId());
+
+      result.add(InterestCorporationCategoryMapper.toDTO(saved, detailDTO, categoryDTO));
+    }
+
+    return result;
+  }
+
+  @Transactional
+  public List<InterestCorporationCategoryDTO> addCorporationsToCategory(List<String> corporationIds, String categoryId, String userId) {
+    CategoryDTO categoryDTO = categoryService.getById(categoryId);
+
+    // delete all existing
+    List<InterestCorporationCategory> existingCategories = interestCorporationCategoryRepository.findByCategoryId(categoryId);
+    interestCorporationCategoryRepository.deleteAll(existingCategories);
+
+    List<InterestCorporationCategoryDTO> result = new ArrayList<>();
+
+    for (String corporationId : corporationIds) {
+      CorporationDTO corporationDTO = corporationService.getById(corporationId);
+
+
+      InterestCorporationDTO interestCorporationDTO = interestCorporationService.getByUserAndCorporation(userId, corporationDTO.getId());
 
       if (interestCorporationDTO == null) {
         interestCorporationService.addInterestCorporation(userId, corporationId);
@@ -110,38 +162,13 @@ public class InterestCorporationCategoryService {
       result.add(InterestCorporationCategoryMapper.toDTO(saved, detailDTO, categoryDTO));
     }
 
-    return result;
-  }
-
-  @Transactional
-  public List<InterestCorporationCategoryDTO> addCorporationsToCategory(List<String> corporationIds, String categoryId) {
-    CategoryDTO categoryDTO = categoryService.getById(categoryId);
-    List<InterestCorporationCategoryDTO> result = new ArrayList<>();
-
-    for (String corporationId : corporationIds) {
-      CorporationDTO corporationDTO = corporationService.getById(corporationId);
-
-      String userId = categoryDTO.getUserId();
-
-      InterestCorporationDTO interestCorporationDTO = interestCorporationService.getByUserAndCorporation(userId, corporationId);
-
-      if (interestCorporationDTO == null) {
-        interestCorporationService.addInterestCorporation(userId, corporationId);
-        interestCorporationDTO = interestCorporationService.getByUserAndCorporation(userId, corporationId);
+    // delete
+    List<InterestCorporationDTO> userInterestCorporations = interestCorporationService.getAllByUserId(userId);
+    for (InterestCorporationDTO existInterestCorporation : userInterestCorporations) {
+      long count = interestCorporationCategoryRepository.countByInterestCorporationId(existInterestCorporation.getId());
+      if (count == 0) {
+        interestCorporationService.deleteById(existInterestCorporation.getId());
       }
-
-      validateNotExists(interestCorporationDTO.getId(), categoryId);
-
-      InterestCorporationCategoryCreateDTO createDTO = InterestCorporationCategoryCreateDTO.builder()
-              .interestCorporationId(interestCorporationDTO.getId())
-              .categoryId(categoryId)
-              .build();
-
-      InterestCorporationCategory entity = InterestCorporationCategoryMapper.fromDTO(createDTO);
-      InterestCorporationCategory saved = interestCorporationCategoryRepository.save(entity);
-      InterestCorporationDetailDTO detailDTO = interestCorporationService.getById(interestCorporationDTO.getId());
-
-      result.add(InterestCorporationCategoryMapper.toDTO(saved, detailDTO, categoryDTO));
     }
 
     return result;
