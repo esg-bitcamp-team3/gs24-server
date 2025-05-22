@@ -1,7 +1,7 @@
 package com.esgScore.server.controller;
 
 import com.esgScore.server.domain.dto.EsgRatingDTO;
-import com.esgScore.server.domain.dto.OrganizationEsgRatingListDTO;
+import com.esgScore.server.domain.dto.CorporationEsgRatingListDTO;
 import com.esgScore.server.exceptions.NotFoundException;
 import com.esgScore.server.service.EsgRatingService;
 import lombok.RequiredArgsConstructor;
@@ -20,30 +20,25 @@ import java.util.List;
 public class EsgRatingController {
     private final EsgRatingService esgRatingService;
 
-    /**
-     * 특정 조직 ID에 해당하는 모든 ESG 등급 정보를 반환하는 API
-     * @param organizationId 조직의 고유 식별자
-     * @return 해당 조직의 ESG 등급 정보를 담은 DTO 리스트를 ResponseEntity로 감싸 반환
-     */
-    @GetMapping("/{organizationId}")
-    public ResponseEntity<OrganizationEsgRatingListDTO> getAllEsgRatings(@PathVariable String organizationId)  {
+    @GetMapping("/{corporationId}")
+    public ResponseEntity<CorporationEsgRatingListDTO> getAllEsgRatings(@PathVariable String corporationId)  {
 
         try {
-            OrganizationEsgRatingListDTO organizationEsgRatingListDTO = esgRatingService.getEsgRatingListByOrganizationId(organizationId);
+            CorporationEsgRatingListDTO corporationEsgRatingListDTO = esgRatingService.getEsgRatingListByCorporationId(corporationId);
 
-            return ResponseEntity.ok(organizationEsgRatingListDTO);
+            return ResponseEntity.ok(corporationEsgRatingListDTO);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @GetMapping("/code/{organizationCode}")
-    public ResponseEntity<List<EsgRatingDTO>> getAllEsgRatingsByOrganizationCode(@PathVariable String organizationCode)  {
+    @GetMapping("/code/{corporationCode}")
+    public ResponseEntity<List<EsgRatingDTO>> getAllEsgRatingsByCorporationCode(@PathVariable String corporationCode)  {
 
         try {
-            List<EsgRatingDTO> esgrating = esgRatingService.getEsgRatingListByOrganizationCode(organizationCode);
-            return ResponseEntity.ok(esgrating);
+            List<EsgRatingDTO> esgRating = esgRatingService.getEsgRatingListByCorporationCode(corporationCode);
+            return ResponseEntity.ok(esgRating);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
