@@ -14,6 +14,7 @@ public class CorporationMapper {
                 .id(corporation.getId())
                 .corpCode(corporation.getCorpCode())
                 .corpName(corporation.getCorpName())
+                .stockCode(corporation.getStockCode())
                 .build();
     }
 

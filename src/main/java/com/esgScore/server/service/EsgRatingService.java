@@ -1,10 +1,10 @@
 package com.esgScore.server.service;
 
 import com.esgScore.server.domain.dto.EsgRatingDTO;
-import com.esgScore.server.domain.dto.OrganizationDTO;
+import com.esgScore.server.domain.dto.corporation.CorporationDTO;
 import com.esgScore.server.exceptions.NotFoundException;
 import com.esgScore.server.repository.main.EsgRatingRepository;
-import com.esgScore.server.domain.dto.OrganizationEsgRatingListDTO;
+import com.esgScore.server.domain.dto.CorporationEsgRatingListDTO;
 import com.esgScore.server.mapper.EsgRatingMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,32 +21,27 @@ import java.util.stream.Collectors;
 @Slf4j
 public class EsgRatingService {
     private final EsgRatingRepository esgRatingRepository;
-    private final OrganizationService organizationService;
+    private final CorporationService corporationService;
 
-    /**
-     * 특정 조직 ID로 ESG 등급 데이터를 조회하여 DTO 목록으로 변환하여 반환
-     * @param organizationId 조회할 조직의 고유 식별자(ID)
-     * @return 조회된 ESG 등급 데이터를 변환한 EsgRatingDTO 리스트
-     */
-    public OrganizationEsgRatingListDTO getEsgRatingListByOrganizationId(String organizationId) {
-        OrganizationDTO organization = organizationService.getById(organizationId);
-        log.info("Get EsgRatingListByOrganizationId: {}", organizationId);
+    public CorporationEsgRatingListDTO getEsgRatingListByCorporationId(String corporationId) {
+        CorporationDTO corporation = corporationService.getById(corporationId);
+        log.info("Get EsgRatingListByCorporationId: {}", corporationId);
 
-        List<EsgRatingDTO> esgRatingDTOList = esgRatingRepository.findByCorporationId(organizationId).stream()
+        List<EsgRatingDTO> esgRatingDTOList = esgRatingRepository.findByCorporationId(corporationId).stream()
                 .map(EsgRatingMapper::toDTO)
                 .collect(Collectors.toList());
         log.info("Get : {}", esgRatingDTOList);
 
-        return OrganizationEsgRatingListDTO.builder()
-                .organization(organization)
+        return CorporationEsgRatingListDTO.builder()
+                .corporation(corporation)
                 .ratings(esgRatingDTOList)
                 .build();
     }
 
-    public List<EsgRatingDTO> getEsgRatingListByOrganizationCode(String organizationCode) {
-        OrganizationDTO organization = organizationService.getByCode(organizationCode);
+    public List<EsgRatingDTO> getEsgRatingListByCorporationCode(String corporationCode) {
+        CorporationDTO corporation = corporationService.getByStockCode(corporationCode);
 
-        return esgRatingRepository.findByCorporationId(organization.getId()).stream()
+        return esgRatingRepository.findByCorporationId(corporation.getId()).stream()
                 .map(EsgRatingMapper::toDTO)
                 .collect(Collectors.toList());
     }

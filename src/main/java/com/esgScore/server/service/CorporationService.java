@@ -52,6 +52,13 @@ public class CorporationService {
     return CorporationMapper.toDTO(corporation);
   }
 
+  public CorporationDTO getByStockCode(String stockCode) {
+    Corporation corporation = corporationRepository.findByStockCode(stockCode)
+            .orElseThrow(() -> new NotFoundException("Corporation not found"));
+
+    return CorporationMapper.toDTO(corporation);
+  }
+
   @Transactional
   public CorporationDetailDTO create(CorporationDetailDTO corporationDTO) {
      Corporation corporation = CorporationMapper.fromDTO(corporationDTO);
